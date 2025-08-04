@@ -15,21 +15,53 @@ The `think` tool provides AI systems with a structured approach to problem-solvi
 - **Confidence Tracking**: Express uncertainty with confidence levels (0.0-1.0)
 - **Custom Lenses**: Apply domain-specific analysis (e.g., "security", "performance", "Rust best practices")
 
-## Installation
+## Prerequisites
+
+- [FTL CLI](https://github.com/TBD54566975/ftl) installed
+- Docker (for running with FTL)
+- Rust 1.86+ (for local development)
+
+## Usage
+
+### Option 1: Run Locally
+
+Clone and run the tool locally for development or testing:
 
 ```bash
 # Clone the repository
 git clone https://github.com/fastertools/ftl-tool-think.git
 cd ftl-tool-think
 
-# Build the tool
-make build
-
-# Run with FTL
-ftl serve
+# Start the FTL development server
+ftl up
 ```
 
-## Usage
+The tool will be available in your local FTL environment for use in your applications.
+
+### Option 2: Use as a Remote Dependency
+
+Add this tool to your FTL project as a remote source from GitHub Container Registry (GHCR):
+
+1. In your FTL project, add the tool:
+```bash
+ftl add ghcr.io/fastertools/ftl-tool-think:latest
+```
+
+2. Or manually add to your `ftl.toml`:
+```toml
+[[tools]]
+name = "think"
+source = "ghcr.io/fastertools/ftl-tool-think:latest"
+```
+
+3. Use the tool in your FTL application:
+```rust
+use ftl_think::cogitate;
+
+// Your code using the thinking tool
+```
+
+## Tool Interface
 
 The `cogitate` function accepts the following parameters:
 
@@ -81,22 +113,55 @@ The `cogitate` function accepts the following parameters:
 }
 ```
 
+## Publishing to GHCR
+
+To publish this tool to GitHub Container Registry for others to use:
+
+1. Ensure you're authenticated with GitHub:
+```bash
+# Login to GitHub Container Registry
+echo $GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+```
+
+2. Build the tool:
+```bash
+ftl build
+```
+
+3. Tag and push to GHCR:
+```bash
+# Tag the image
+docker tag ftl-tool-think:latest ghcr.io/YOUR_GITHUB_USERNAME/ftl-tool-think:latest
+
+# Push to GHCR
+docker push ghcr.io/YOUR_GITHUB_USERNAME/ftl-tool-think:latest
+```
+
+4. Make the package public (optional):
+   - Go to your GitHub profile → Packages
+   - Find the `ftl-tool-think` package
+   - Click on "Package settings"
+   - Change visibility to "Public"
+
 ## Development
 
-### Prerequisites
-- Rust 1.86+
-- FTL SDK
-- Make
+### Building from Source
 
-### Building
 ```bash
-make build
+# Clone the repository
+git clone https://github.com/fastertools/ftl-tool-think.git
+cd ftl-tool-think
+
+# Build the tool
+cargo build --release
+
+# Run tests
+cargo test
 ```
 
-### Testing
-```bash
-make test
-```
+### Contributing
+
+Please feel free to get in touch if you're interested in contributing.
 
 ## Architecture
 

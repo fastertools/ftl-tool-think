@@ -9,7 +9,7 @@ enabled = false
 
 [tools.think]
 path = "think"
-wasm = "target/wasm32-wasip1/release/think.wasm"
+wasm = "think/target/wasm32-wasip1/release/think.wasm"
 allowed_outbound_hosts = []
 
 [tools.think.build]
