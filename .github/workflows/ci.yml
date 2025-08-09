@@ -1,0 +1,219 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # ===== CHANGE DETECTION =====
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      rust: ${{ steps.filter.outputs.rust }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            rust:
+              - '**/*.rs'
+              - '**/Cargo.toml'
+              - 'Cargo.lock'
+
+  # ===== CODE QUALITY CHECKS =====
+  format:
+    name: Check Formatting
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      
+      - name: Check formatting
+        run: cargo fmt --check
+        working-directory: think
+
+  lint:
+    name: Lint Code
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+          targets: wasm32-wasip1
+      
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Run clippy
+        run: make lint
+        working-directory: think
+
+  # ===== BUILD VERIFICATION =====
+  build:
+    name: Build WASM
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1
+      
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Build WASM
+        run: make build
+        working-directory: think
+      
+      - name: Upload WASM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-wasm
+          path: think/target/wasm32-wasip1/debug/think.wasm
+          retention-days: 1
+
+  # ===== TESTS =====
+  test:
+    name: Run Tests
+    needs: changes
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+      
+      - name: Run tests
+        run: make test
+        working-directory: think
+
+  # ===== INTEGRATION TEST =====
+  smoke-test:
+    name: Smoke Test
+    needs: [changes, build]
+    if: needs.changes.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download WASM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-wasm
+          path: think/target/wasm32-wasip1/debug/
+      
+      - name: Install Spin
+        uses: fermyon/actions/spin/setup@v1
+        with:
+          version: v3.3.1
+      
+      - name: Quick smoke test
+        run: |
+          spin up --listen 127.0.0.1:3000 &
+          SPIN_PID=$!
+          
+          sleep 10
+          
+          if curl -s http://127.0.0.1:3000/mcp >/dev/null 2>&1; then
+            echo "✅ Smoke test passed"
+          else
+            echo "❌ Smoke test failed"
+            exit 1
+          fi
+          
+          kill $SPIN_PID || true
+
+  # ===== CI SUMMARY =====
+  ci-summary:
+    name: CI Summary
+    if: always()
+    needs: [changes, format, lint, build, test, smoke-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create summary
+        run: |
+          echo "## CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Change detection
+          if [[ "${{ needs.changes.outputs.rust }}" == "true" ]]; then
+            echo "🔄 **Changes**: Rust files detected" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⏭️ **Changes**: No Rust changes, jobs skipped" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Only show results if Rust changes detected
+          if [[ "${{ needs.changes.outputs.rust }}" == "true" ]]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Format results
+            if [[ "${{ needs.format.result }}" == "success" ]]; then
+              echo "✅ **Format**: Code properly formatted" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Format**: Formatting issues detected" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            # Lint results
+            if [[ "${{ needs.lint.result }}" == "success" ]]; then
+              echo "✅ **Lint**: No clippy warnings" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Lint**: Clippy warnings detected" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            # Build results
+            if [[ "${{ needs.build.result }}" == "success" ]]; then
+              echo "✅ **Build**: WASM compilation successful" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Build**: Compilation failed" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            # Test results
+            if [[ "${{ needs.test.result }}" == "success" ]]; then
+              echo "✅ **Test**: All unit tests passed" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Test**: Unit tests failed" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            # Smoke test results
+            if [[ "${{ needs.smoke-test.result }}" == "success" ]]; then
+              echo "✅ **Smoke Test**: Integration test passed" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Smoke Test**: Integration test failed" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi

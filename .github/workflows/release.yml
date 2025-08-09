@@ -26,53 +26,6 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  # ===== CHANGE DETECTION =====
-  changes:
-    name: Detect Changes
-    runs-on: ubuntu-latest
-    outputs:
-      rust: ${{ steps.filter.outputs.rust }}
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            rust:
-              - '**/*.rs'
-              - '**/Cargo.toml'
-              - 'Cargo.lock'
-
-  # ===== CONDITIONAL LINTING =====
-  lint:
-    name: Lint Code
-    needs: changes
-    if: needs.changes.outputs.rust == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
-          targets: wasm32-wasip1
-      
-      - name: Cache cargo registry
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-      
-      - name: Check formatting
-        run: make format
-        working-directory: think
-      
-      - name: Run clippy
-        run: make lint
-        working-directory: think
-
   # ===== PREPARE RELEASE =====
   prepare:
     name: Prepare Release
@@ -376,7 +329,7 @@ jobs:
   release-summary:
     name: Release Summary
     if: always()
-    needs: [prepare, lint, build-release, test-release, publish-ghcr, github-release]
+    needs: [prepare, build-release, test-release, publish-ghcr, github-release]
     runs-on: ubuntu-latest
     steps:
       - name: Create summary
@@ -394,15 +347,6 @@ jobs:
           fi
           
           echo "" >> $GITHUB_STEP_SUMMARY
-          
-          # Lint results
-          if [[ "${{ needs.lint.result }}" == "success" ]]; then
-            echo "✅ **Lint**: Passed" >> $GITHUB_STEP_SUMMARY
-          elif [[ "${{ needs.lint.result }}" == "skipped" ]]; then
-            echo "⏭️ **Lint**: Skipped (no Rust changes)" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Lint**: Failed" >> $GITHUB_STEP_SUMMARY
-          fi
           
           # Build status
           if [[ "${{ needs.build-release.result }}" == "success" ]]; then
