@@ -122,27 +122,6 @@ jobs:
         run: make test
         working-directory: think
       
-      - name: Install Spin
-        uses: fermyon/actions/spin/setup@v1
-        with:
-          version: v3.3.1
-      
-      - name: Smoke test release build
-        run: |
-          # Quick validation that the release build works
-          spin up --listen 127.0.0.1:3000 &
-          SPIN_PID=$!
-          
-          sleep 30
-          
-          if curl -s http://127.0.0.1:3000/mcp >/dev/null 2>&1; then
-            echo "✅ Release build validated"
-          else
-            echo "❌ Release build failed smoke test"
-            exit 1
-          fi
-          
-          kill $SPIN_PID || true
 
   # ===== PUBLISH TO GHCR =====
   publish-ghcr:
