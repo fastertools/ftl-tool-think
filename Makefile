@@ -1,25 +1,25 @@
 .PHONY: build clean test check format lint serve
 
 build:
-	cd think && make build
+	ftl build	
 
 clean:
-	cd think && make clean
+	make -C think clean
 
 test:
-	cd think && make test
+	make -C think test
 
 check:
-	cd think && make check
+	make -C think check
 
 format:
-	cd think && make format
+	make -C think format
 
 lint:
-	cd think && make lint
+	make -C think lint
 
 serve: build
-	ftl serve
+	ftl up
 
 dev: format lint test
 	@echo "Development checks passed!"

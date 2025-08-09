@@ -1,7 +1,7 @@
 [project]
 name = "ftl-tool-think"
 version = "0.1.0"
-description = "FTL tool for sequential thinking and structured reasoning"
+description = "FTL tool for structured reasoning and dynamic problem-solving"
 authors = ["Corey Ryan <corey@coreyr.com>"]
 
 [auth]
