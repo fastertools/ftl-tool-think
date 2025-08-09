@@ -1,14 +1,19 @@
 # ftl-tool-think
 
-An FTL tool for sequential thinking and structured reasoning, powered by [MindKit](https://github.com/DevOpsDali/mindkit).
+[![Release](https://github.com/fastertools/ftl-tool-think/workflows/Release/badge.svg)](https://github.com/fastertools/ftl-tool-think/actions)
+[![Rust Version](https://img.shields.io/badge/rust-1.86%2B-orange)](https://forge.rust-lang.org/releases.html)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![GHCR](https://img.shields.io/badge/ghcr.io-ftl--tool--think-blue)](https://github.com/fastertools/ftl-tool-think/pkgs/container/ftl-tool-think)
+
+An **[FTL](https://github.com/fastertools/ftl-cli)** tool for structured reasoning and dynamic problem-solving, powered by [MindKit](https://github.com/DevOpsDali/mindkit).
 
 ## Overview
 
-The `think` tool provides AI systems with a structured approach to problem-solving through sequential thinking. It allows for dynamic reasoning that can branch, revise, and evolve as understanding deepens.
+The `think` tool provides AI systems with a structured reasoning framework for complex problem-solving. It allows for dynamic reasoning that can branch, revise, and evolve as understanding deepens.
 
 ## Features
 
-- **Sequential Thinking**: Break down complex problems into manageable thought steps
+- **Structured Reasoning**: Break down complex problems into manageable analytical steps
 - **Thought Types**: Support for analytical, critical, synthesis, and validation thinking modes
 - **Dynamic Revision**: Ability to revise previous thoughts as new insights emerge
 - **Branching Logic**: Explore alternative reasoning paths from any thought
@@ -44,7 +49,7 @@ Add this tool to your FTL project as a remote source from GitHub Container Regis
 
 1. In your FTL project, add the tool:
 ```bash
-ftl add ghcr.io/fastertools/ftl-tool-think:latest
+ftl add tools add ghcr.io/fastertools/ftl-tool-think:latest
 ```
 
 2. Or manually add to your `ftl.toml`:
@@ -56,14 +61,14 @@ source = "ghcr.io/fastertools/ftl-tool-think:latest"
 
 3. Use the tool in your FTL application:
 ```rust
-use ftl_think::cogitate;
+use ftl_think::structured_reasoning;
 
-// Your code using the thinking tool
+// Your code using the structured reasoning tool
 ```
 
 ## Tool Interface
 
-The `cogitate` function accepts the following parameters:
+The `structured_reasoning` function accepts the following parameters:
 
 - `thought`: Your current thinking step
 - `nextThoughtNeeded`: Whether more thinking is required
@@ -79,7 +84,7 @@ The `cogitate` function accepts the following parameters:
 
 ## Examples
 
-### Basic Sequential Thinking
+### Basic Structured Reasoning
 ```json
 {
   "thought": "Let me break down this authentication problem step by step",
@@ -113,36 +118,6 @@ The `cogitate` function accepts the following parameters:
 }
 ```
 
-## Publishing to GHCR
-
-To publish this tool to GitHub Container Registry for others to use:
-
-1. Ensure you're authenticated with GitHub:
-```bash
-# Login to GitHub Container Registry
-echo $GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
-```
-
-2. Build the tool:
-```bash
-ftl build
-```
-
-3. Tag and push to GHCR:
-```bash
-# Tag the image
-docker tag ftl-tool-think:latest ghcr.io/YOUR_GITHUB_USERNAME/ftl-tool-think:latest
-
-# Push to GHCR
-docker push ghcr.io/YOUR_GITHUB_USERNAME/ftl-tool-think:latest
-```
-
-4. Make the package public (optional):
-   - Go to your GitHub profile → Packages
-   - Find the `ftl-tool-think` package
-   - Click on "Package settings"
-   - Change visibility to "Public"
-
 ## Development
 
 ### Building from Source
@@ -153,26 +128,21 @@ git clone https://github.com/fastertools/ftl-tool-think.git
 cd ftl-tool-think
 
 # Build the tool
-cargo build --release
+ftl build
 
-# Run tests
-cargo test
+# Start the tool
+ftl up
 ```
 
 ### Contributing
 
 Please feel free to get in touch if you're interested in contributing.
 
-## Architecture
+## Inspiration / Acknowledgements
 
-The tool is built on:
-- **[MindKit](https://github.com/DevOpsDali/mindkit)**: Generic sequential thinking library
-- **FTL SDK**: For MCP server integration
-- **WebAssembly**: Compiled to WASM for secure, sandboxed execution
+The tool is built on **[MindKit](https://github.com/DevOpsDali/mindkit)** mcp agnostic sequential thinking library
 
-## Inspiration
-
-This tool was inspired by [@modelcontextprotocol/server-sequential-thinking](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking), extending the concept into a Rust-based FTL tool.
+This tool was inspired by [@modelcontextprotocol/server-sequential-thinking](https://www.npmjs.com/package/@modelcontextprotocol/server-sequential-thinking), extending the concept into a structured reasoning framework built as a Rust-based FTL tool.
 
 ## License
 
