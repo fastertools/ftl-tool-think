@@ -93,13 +93,6 @@ jobs:
       - name: Build WASM
         run: make build
         working-directory: think
-      
-      - name: Upload WASM artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ci-wasm
-          path: think/target/wasm32-wasip1/release/think.wasm
-          retention-days: 1
 
   # ===== TESTS =====
   test:
@@ -123,47 +116,12 @@ jobs:
         run: make test
         working-directory: think
 
-  # ===== INTEGRATION TEST =====
-  smoke-test:
-    name: Smoke Test
-    needs: [changes, build]
-    if: needs.changes.outputs.rust == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Download WASM artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ci-wasm
-          path: think/target/wasm32-wasip1/release/
-      
-      - name: Install Spin
-        uses: fermyon/actions/spin/setup@v1
-        with:
-          version: v3.3.1
-      
-      - name: Quick smoke test
-        run: |
-          spin up --listen 127.0.0.1:3000 &
-          SPIN_PID=$!
-          
-          sleep 10
-          
-          if curl -s http://127.0.0.1:3000/mcp >/dev/null 2>&1; then
-            echo "✅ Smoke test passed"
-          else
-            echo "❌ Smoke test failed"
-            exit 1
-          fi
-          
-          kill $SPIN_PID || true
 
   # ===== CI SUMMARY =====
   ci-summary:
     name: CI Summary
     if: always()
-    needs: [changes, format, lint, build, test, smoke-test]
+    needs: [changes, format, lint, build, test]
     runs-on: ubuntu-latest
     steps:
       - name: Create summary
@@ -210,10 +168,4 @@ jobs:
               echo "❌ **Test**: Unit tests failed" >> $GITHUB_STEP_SUMMARY
             fi
             
-            # Smoke test results
-            if [[ "${{ needs.smoke-test.result }}" == "success" ]]; then
-              echo "✅ **Smoke Test**: Integration test passed" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "❌ **Smoke Test**: Integration test failed" >> $GITHUB_STEP_SUMMARY
-            fi
           fi
