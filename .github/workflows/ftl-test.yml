@@ -1,0 +1,44 @@
+name: FTL Test
+
+on:
+  push:
+    branches: [ fix-smoke-tests ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  ftl-test:
+    name: FTL Integration Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: fastertools/actions/actions/setup-ftl@v1
+        with:
+          version: 'latest'
+          install-dependencies: true
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1
+      
+      - name: Build WASM
+        run: make build
+        working-directory: think
+      
+      - name: Start FTL server
+        run: ftl up --detach
+      
+      - name: Wait for server
+        run: sleep 10
+      
+      - name: Test MCP endpoint
+        run: |
+          curl -f http://localhost:8080/mcp || exit 1
+          echo "✅ MCP endpoint responding"
+      
+      - name: Stop FTL server
+        if: always()
+        run: ftl down
