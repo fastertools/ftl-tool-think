@@ -14,7 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: fastertools/actions/actions/setup-ftl@21403b8e36d45ab02cbe5fe8c0fc9951f56cb9bc
+      - name: Start FTL Server
+        uses: fastertools/actions/ftl-server-up@8d782449a5e710a6d5c42e5f0716eb91b6a48241
+        with:
+          port: 8080
+          timeout: 30
+          build: false
+          working-directory: .
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -24,10 +30,10 @@ jobs:
       - name: Build WASM
         run: ftl build
 
-      - uses: fastertools/actions/actions/ftl-eng-deploy@21403b8e36d45ab02cbe5fe8c0fc9951f56cb9bc
-        env:
-          FTL_M2M_APP_CLIENT_ID: ${{ secrets.FTL_M2M_APP_CLIENT_ID }}
-          FTL_M2M_APP_CLIENT_SECRET: ${{ secrets.FTL_M2M_APP_CLIENT_SECRET }}
+      # - uses: fastertools/actions/actions/ftl-eng-deploy@21403b8e36d45ab02cbe5fe8c0fc9951f56cb9bc
+      #   env:
+      #     FTL_M2M_APP_CLIENT_ID: ${{ secrets.FTL_M2M_APP_CLIENT_ID }}
+      #     FTL_M2M_APP_CLIENT_SECRET: ${{ secrets.FTL_M2M_APP_CLIENT_SECRET }}
       
       - name: Test MCP endpoint
         run: |
