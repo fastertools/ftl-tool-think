@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: fastertools/actions/actions/setup-ftl@d96c008dd1d5277d71ad1f80f2c5a147791b5ab5
+      - uses: fastertools/actions/actions/setup-ftl@21403b8e36d45ab02cbe5fe8c0fc9951f56cb9bc
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -24,15 +24,10 @@ jobs:
       - name: Build WASM
         run: ftl build
 
-      - uses: fastertools/actions/actions/ftl-eng-deploy@d96c008dd1d5277d71ad1f80f2c5a147791b5ab5
+      - uses: fastertools/actions/actions/ftl-eng-deploy@21403b8e36d45ab02cbe5fe8c0fc9951f56cb9bc
         env:
           FTL_M2M_APP_CLIENT_ID: ${{ secrets.FTL_M2M_APP_CLIENT_ID }}
           FTL_M2M_APP_CLIENT_SECRET: ${{ secrets.FTL_M2M_APP_CLIENT_SECRET }}
-        with:
-          oauth-url: https://divine-lion-50-staging.authkit.app/oauth2/token
-          scope: 'FTL Think GitHub Deploy Action'
-          wait-for-deployment: true
-          deployment-timeout: 300
       
       - name: Test MCP endpoint
         run: |
