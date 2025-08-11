@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: fastertools/actions/actions/setup-ftl@a74afbda99c31a308bf2a181095680f0b5873a71
+      - uses: fastertools/actions/actions/setup-ftl@10ad5d589cf38edf422c3e68fb6cbe124c5f4218
         with:
           version: 'latest'
           install-dependencies: true
