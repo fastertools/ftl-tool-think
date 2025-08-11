@@ -25,11 +25,11 @@ jobs:
           targets: wasm32-wasip1
       
       - name: Build WASM
-        run: make build
+        run: ftl build
         working-directory: think
       
       - name: Start FTL server
-        run: ftl up --detach
+        run: ftl up 
       
       - name: Wait for server
         run: sleep 10
