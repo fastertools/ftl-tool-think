@@ -28,6 +28,22 @@ jobs:
       
       - name: Test MCP endpoint
         run: |
-          curl -f http://localhost:8080/mcp || exit 1
-          echo "✅ MCP endpoint responding"
+          HEALTH_URL="http://localhost:8080/mcp"
+          mcp_request='{"jsonrpc":"2.0","method":"ping","id":1}'
+          
+          mcp_response=$(curl -w "HTTP_STATUS:%{http_code}" -s --connect-timeout 5 --max-time 10 \
+               -H "Content-Type: application/json" \
+               -X POST \
+               -d "$mcp_request" \
+               "$HEALTH_URL" 2>&1)
+          
+          http_status=$(echo "$mcp_response" | grep -o "HTTP_STATUS:[0-9]*" | cut -d: -f2)
+          
+          if [[ "$http_status" == "200" ]]; then
+            echo "✅ MCP endpoint responding with HTTP 200"
+          else
+            echo "❌ MCP endpoint failed with status: $http_status"
+            echo "Response: $mcp_response"
+            exit 1
+          fi
       
