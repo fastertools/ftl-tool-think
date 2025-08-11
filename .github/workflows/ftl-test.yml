@@ -28,7 +28,7 @@ jobs:
       
       - name: Test MCP endpoint
         run: |
-          HEALTH_URL="http://localhost:8080/mcp"
+          HEALTH_URL="http://localhost:3000/mcp"
           mcp_request='{"jsonrpc":"2.0","method":"ping","id":1}'
           
           mcp_response=$(curl -w "HTTP_STATUS:%{http_code}" -s --connect-timeout 5 --max-time 10 \
