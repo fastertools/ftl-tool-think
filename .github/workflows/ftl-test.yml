@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: fastertools/actions/actions/setup-ftl@9a103e4e776078a08f0aeed9fc2484a28d952cbb
+      - uses: fastertools/actions/actions/setup-ftl@bbfc305c4b1c55a222cfe7c420cc7cad9136eed7
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -24,7 +24,7 @@ jobs:
       - name: Build WASM
         run: ftl build
 
-      - uses: fastertools/actions/actions/start-ftl-server@9a103e4e776078a08f0aeed9fc2484a28d952cbb
+      - uses: fastertools/actions/actions/start-ftl-server@bbfc305c4b1c55a222cfe7c420cc7cad9136eed7
       
       - name: Test MCP endpoint
         run: |
