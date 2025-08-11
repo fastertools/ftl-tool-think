@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: fastertools/actions/actions/setup-ftl@3438afcb378cd28aabf10e6051df650d38b131eb
+      - uses: fastertools/actions/actions/setup-ftl@9a103e4e776078a08f0aeed9fc2484a28d952cbb
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -24,13 +24,10 @@ jobs:
       - name: Build WASM
         run: ftl build
 
-      - uses: fastertools/actions/actions/start-ftl-server@3438afcb378cd28aabf10e6051df650d38b131eb
+      - uses: fastertools/actions/actions/start-ftl-server@9a103e4e776078a08f0aeed9fc2484a28d952cbb
       
       - name: Test MCP endpoint
         run: |
           curl -f http://localhost:8080/mcp || exit 1
           echo "✅ MCP endpoint responding"
       
-      - name: Stop FTL server
-        if: always()
-        run: ftl down
