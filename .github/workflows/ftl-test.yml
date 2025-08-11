@@ -27,7 +27,6 @@ jobs:
       - uses: fastertools/actions/actions/start-ftl-server@f5f0aee8b93b75b7d2fb50f810746ef0c8a08fbe
         with:
           health-check-timeout: 30
-          log-level: info
 
       - name: Wait for server
         run: sleep 10

@@ -115,6 +115,11 @@ jobs:
       - name: Run tests
         run: make test
         working-directory: think
+      - name: FTL Test
+        uses: fastertools/actions/actions/setup-ftl@v1
+        with:
+          version: 'latest'
+          install-dependencies: true
 
 
   # ===== CI SUMMARY =====
@@ -169,3 +174,8 @@ jobs:
             fi
             
           fi
+
+  - uses: fastertools/actions/actions/setup-ftl@v1
+    with:
+      version: 'latest'
+      install-dependencies: true
