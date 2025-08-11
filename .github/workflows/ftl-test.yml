@@ -25,6 +25,14 @@ jobs:
         run: ftl build
 
       - uses: fastertools/actions/actions/ftl-eng-deploy@d623e30ac9c2c3e3f022c59caf10faa2754cbaf4
+        env:
+          FTL_M2M_APP_CLIENT_ID: ${{ secrets.FTL_M2M_APP_CLIENT_ID }}
+          FTL_M2M_APP_CLIENT_SECRET: ${{ secrets.FTL_M2M_APP_CLIENT_SECRET }}
+        with:
+          oauth-url: https://divine-lion-50-staging.authkit.app/oauth2/token
+          scope: 'FTL GitHub Deploy Action'
+          wait-for-deployment: true
+          deployment-timeout: 300
       
       - name: Test MCP endpoint
         run: |
