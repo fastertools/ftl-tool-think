@@ -14,10 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: fastertools/actions/actions/setup-ftl@a23850654871c4c21be8bbb7e799808348b4c16d
-        with:
-          version: 'latest'
-          install-dependencies: true
+      - uses: fastertools/actions/actions/setup-ftl@997da4271966e78caf120f0c3691fb2d4c7f685c
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -26,11 +23,12 @@ jobs:
       
       - name: Build WASM
         run: ftl build
-        working-directory: think
-      
-      - name: Start FTL server
-        run: ftl up 
-      
+
+      - uses: fastertools/actions/actions/start-ftl-server@997da4271966e78caf120f0c3691fb2d4c7f685c
+        with:
+          health-check-timeout: 30
+          log-level: info
+
       - name: Wait for server
         run: sleep 10
       
