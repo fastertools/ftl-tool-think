@@ -17,11 +17,11 @@ jobs:
       - name: Setup FTL CLI with Dependencies
         uses: fastertools/actions/ftl-setup@378737794bfdada7bff1111722b23c22486fd73f
 
-      # - name: Start FTL Server
-      #   uses: fastertools/actions/ftl-server-up@9ba64633b5e43b68d3973e020ff1a970d4ee15a6
-      #   with:
-      #     port: 3000
-      #     timeout: 30
+      - name: Start FTL Server
+        uses: fastertools/actions/ftl-server-up@378737794bfdada7bff1111722b23c22486fd73f
+        with:
+          port: 3000
+          timeout: 30
       
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
