@@ -48,7 +48,7 @@ jobs:
                "$HEALTH_URL" 2>&1)
           
           echo $mcp_response
-          echo "$mcp_response" | grep -o "HTTP_STATUS:[0-9]*" | cut -d: -f2)
+          http_status=$(echo "$mcp_response" | grep -o "HTTP_STATUS:[0-9]*" | cut -d: -f2)
           
           if [[ "$http_status" == "200" ]]; then
             echo "✅ MCP endpoint responding with HTTP 200"
