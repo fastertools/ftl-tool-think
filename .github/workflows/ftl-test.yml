@@ -16,9 +16,6 @@ jobs:
       
       - name: Setup FTL CLI with Dependencies
         uses: fastertools/actions/setup-ftl-js@0acb32a3841af34c05d8c528ad41f43ecc599e5c
-        with:
-          version: 'latest'
-          use-cache: true
 
       # - name: Start FTL Server
       #   uses: fastertools/actions/ftl-server-up@9ba64633b5e43b68d3973e020ff1a970d4ee15a6
