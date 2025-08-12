@@ -15,10 +15,10 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Setup FTL CLI with Dependencies
-        uses: fastertools/actions/ftl-setup@5faf496378003e5c08b72ed065bac2fef0bbed9c
+        uses: fastertools/actions/ftl-setup@0c768fa5d7bea68af7b0a1bd9f9d2eed98701f33
 
       - name: Start FTL Server
-        uses: fastertools/actions/ftl-server-up@5faf496378003e5c08b72ed065bac2fef0bbed9c
+        uses: fastertools/actions/ftl-server-up@0c768fa5d7bea68af7b0a1bd9f9d2eed98701f33
         with:
           port: 3000
           timeout: 30
