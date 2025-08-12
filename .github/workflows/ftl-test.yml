@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Setup FTL CLI with Dependencies
-        uses: fastertools/actions/setup-ftl-js@0df056163ee4d0e6c60d638f6faf432f7032b772
+        uses: fastertools/actions/setup-ftl-js@1b25d18b694582cfba70e1b59e0499dfaa17103f
         with:
           version: 'latest'
           use-cache: true
