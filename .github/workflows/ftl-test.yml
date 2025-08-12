@@ -29,7 +29,7 @@ jobs:
           targets: wasm32-wasip1
       
       - name: Build WASM
-        run: ftl build
+        run: ls -al && ftl build
 
       # - uses: fastertools/actions/actions/ftl-eng-deploy@21403b8e36d45ab02cbe5fe8c0fc9951f56cb9bc
       #   env:
