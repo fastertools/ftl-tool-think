@@ -1,0 +1,43 @@
+spin_manifest_version = 2
+
+[application]
+name = "whs"
+version = "0.1.0"
+description = "FTL MCP server for hosting MCP tools"
+
+[variables]
+tool_components = { default = "think" }
+auth_enabled = { default = "false" }
+
+[component]
+
+[component.think]
+source = "think/target/wasm32-wasip1/release/think.wasm"
+dependencies_inherit_configuration = false
+
+[component.think.build]
+command = "make build"
+workdir = "think"
+watch = ["src/**/*.rs", "Cargo.toml"]
+
+[component.mcp]
+allowed_outbound_hosts = ["http://*.spin.internal"]
+dependencies_inherit_configuration = false
+
+[component.mcp.source]
+registry = "ghcr.io"
+package = "fastertools:mcp-gateway"
+version = "0.0.10"
+
+[component.mcp.variables]
+tool_components = "{{ tool_components }}"
+validate_arguments = "false"
+
+[[trigger.http]]
+route = "/..."
+component = "mcp"
+
+[[trigger.http]]
+route = { private = true }
+component = "think"
+
