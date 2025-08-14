@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Setup FTL CLI with Dependencies
-        uses: fastertools/actions/ftl-setup@b6389f6053cc38f948a855d47905d8088b672852
+        uses: fastertools/actions/ftl-setup@9fa4e942f52c57214fdb4525fc3accb0f6fdac2d
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -23,10 +23,10 @@ jobs:
           targets: wasm32-wasip1
       
       - name: Build WASM
-        run: ls -al && ftl build
+        run: ls -al && ftl build --export spin --export-out ./ && cat spin.toml && cat ftl.toml
 
       - name: Start FTL Server
-        uses: fastertools/actions/ftl-server-up@b6389f6053cc38f948a855d47905d8088b672852
+        uses: fastertools/actions/ftl-server-up@9fa4e942f52c57214fdb4525fc3accb0f6fdac2d
         with:
           port: 3000
           timeout: 30
