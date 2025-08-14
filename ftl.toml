@@ -5,12 +5,12 @@ description = "FTL MCP server for hosting MCP tools"
 authors = []
 access_control = "public"
 
-[tools.think]
+[component.think]
 path = "think"
 wasm = "think/target/wasm32-wasip1/release/think.wasm"
 allowed_outbound_hosts = []
 
-[tools.think.build]
+[component.think.build]
 command = "make build"
 watch = [
     "src/**/*.rs",
