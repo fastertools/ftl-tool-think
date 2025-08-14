@@ -23,7 +23,7 @@ jobs:
           targets: wasm32-wasip1
       
       - name: Build WASM
-        run: ls -al && ftl build --export spin --export-out ./spin.toml && cat spin.toml && cat ftl.toml
+        run: ls -al && ftl build --export spin --export-out ./spin.toml && cat spin.toml && cat ftl.toml && ftl build
 
       - name: Start FTL Server
         uses: fastertools/actions/ftl-server-up@9fa4e942f52c57214fdb4525fc3accb0f6fdac2d
