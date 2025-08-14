@@ -1,11 +1,9 @@
 [project]
-name = "ftl-tool-think"
+name = "whs"
 version = "0.1.0"
-description = "FTL tool for structured reasoning and dynamic problem-solving"
-authors = ["Corey Ryan <corey@coreyr.com>"]
-
-[auth]
-enabled = false
+description = "FTL MCP server for hosting MCP tools"
+authors = []
+access_control = "public"
 
 [tools.think]
 path = "think"
@@ -20,6 +18,6 @@ watch = [
 ]
 
 [mcp]
-gateway = "ghcr.io/fastertools/mcp-gateway:0.0.9"
-authorizer = "ghcr.io/fastertools/mcp-authorizer:0.0.9"
-validate_arguments = true
+gateway = "ghcr.io/fastertools/mcp-gateway:0.0.10"
+authorizer = "ghcr.io/fastertools/mcp-authorizer:0.0.12"
+validate_arguments = false
