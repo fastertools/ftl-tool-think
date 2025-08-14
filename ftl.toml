@@ -1,8 +1,8 @@
 [project]
-name = "whs"
+name = "ftl-tool-think"
 version = "0.1.0"
-description = "FTL MCP server for hosting MCP tools"
-authors = []
+description = "FTL tructured reasoning tool"
+authors = ["corey@coreyr.com"]
 access_control = "public"
 
 [component.think]
@@ -18,6 +18,6 @@ watch = [
 ]
 
 [mcp]
-gateway = "ghcr.io/fastertools/mcp-gateway:0.0.10"
-authorizer = "ghcr.io/fastertools/mcp-authorizer:0.0.12"
+gateway = "ghcr.io/fastertools/mcp-gateway:0.0.12"
+authorizer = "ghcr.io/fastertools/mcp-authorizer:0.0.14"
 validate_arguments = false
